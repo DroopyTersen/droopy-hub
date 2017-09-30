@@ -1,6 +1,6 @@
 {
   "name": "hub-flow",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "pub-sub based immutable state management",
   "main": "index.js",
   "scripts": {
