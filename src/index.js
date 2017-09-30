@@ -1,5 +1,6 @@
 var Freezer = require("freezer-js");
 var objectAssign = require('object-assign');
+
 const defaultOptions = {
     cacheKey: "droopy-hub-cache",
     cacheEnabled: true
