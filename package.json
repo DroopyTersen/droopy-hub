@@ -1,6 +1,6 @@
 {
   "name": "hub-flow",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "pub-sub based immutable state management",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "Andrew Petersen",
   "license": "ISC",
   "dependencies": {
-    "freezer-js": "^0.13.0"
+    "freezer-js": "^0.13.0",
+    "object-assign": "^4.1.1"
   }
 }
