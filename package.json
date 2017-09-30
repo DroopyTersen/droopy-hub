@@ -1,0 +1,14 @@
+{
+  "name": "droopy-hub",
+  "version": "0.0.1",
+  "description": "pub-sub based immutable state management",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrew Petersen",
+  "license": "ISC",
+  "dependencies": {
+    "freezer-js": "^0.13.0"
+  }
+}
