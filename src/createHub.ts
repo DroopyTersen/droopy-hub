@@ -20,7 +20,7 @@ export default function createHub<T>(defaultState: T, opts: HubOptions): Hub<T> 
   hub.cache = cache;
   hub.cacheState = () => cache.set(freezer.get().toJS());
   hub.trigger = (key, ...args) => hub.emit(key, ...args);
-  return hub;
+  return hub as Hub<T>;
 }
 
 var setupCache = function (key: string) {
