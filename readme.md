@@ -13,18 +13,21 @@ _hub.ts_
 
 ```typescript
 import createHub, { Hub } from "hub-flow";
-export * from "hub-flow";
-import { registerActions: registerCounter } from "models/counter/counter.actions";
-import { registerActions: registerUsers } as users from "models/users/users.actions";
-import { User, Counter } from "models";
+import { DBUser, Counter } from "models";
 
 // Describe the Shape of your App State
 export interface AppState {
-  users: User[];
-  counter: Counter;
+  counter: { count: number };
+  // Store the server responses on App state
+  // And transform the data via the Model (see below)
+  // Basically, store serializable stuff on app state so
+  // caching works properly
+  users: DBUser[];
 }
 
-// Setup a default App State
+// Setup the default AppState
+// Unless you specify, the app state will be loaded
+// from cache if possible
 const DEFAULT_STATE: AppState = {
   users: [],
   counter: new Counter(),
@@ -33,23 +36,16 @@ const DEFAULT_STATE: AppState = {
 // Create the HUB
 let hub = createHub(DEFAULT_STATE);
 
-// Register the actions
-registerCounter(hub);
-registerUsers(hub);
-
-// Expose a few different ways to get the hub
-export const getHub = () => hub;
-
-declare global {
-  interface Window {
-    hub: Hub<AppState>;
-  }
-}
-window.hub = hub;
 export default hub;
 ```
 
-Once you setup a hub, you want to create a `Model` for the various slices/layers of your application state. It is in the `Model` that you can create methods that update AppState as well as setup specific listeners so that your component only re-renders when it needs to.
+Once you setup a hub, you want to create a `Model` for the various slices/layers of your application state. In the `Model` you can
+
+- create methods that update AppState
+- Setup specific listeners so that your component only re-renders when it needs to.
+- Transform data / setup computed values
+- Setup relationships with other layers of the application (optionally)
+
 _counter.models.ts_
 
 ```typescript
@@ -74,16 +70,11 @@ export class Counter extends Model<Counter> {
     hub.state.counter.set({ count: 0 });
   }
 }
-
-// To be stored in the App State
-export interface CounterState {
-  count: number;
-}
 ```
 
-Then use it in a React component by leveraging `useModel`. This hook will wire up the listeners you defined in your Model class so that React only re-renders when it should
+Then use it in a React component by leveraging `useModel`.
 
-```typescript
+```jsx
 import React from "react";
 import { Counter } from "models";
 import { useModel } from "hub-flow";
@@ -107,17 +98,14 @@ export function CounterButtons() {
 }
 ```
 
+Under the covers, `useModel` hook:
+
+- Wraps your Model's contstructor witha React.useMemo so that you don't get a new instance of your model with each render
+- Additional params will be passed to your Model's constructor
+- Wires up to the listeners that you defined in your `Model` so that React renders any time that listener receives and `update` event.
+
 ```typescript
 useModel(Counter) => new Counter();
+// Additional params will be passed to your Model's constructor
 useModel(User, 3) => new User(3);
 ```
-
-![Hub Flow](https://cdn-images-1.medium.com/max/1000/1*fQCprFj929rurkPYllpbUw.png)
-
-[Overview](https://medium.com/@droopytersen/hub-flow-introduction-13260c90c893)
-
-[Getting Started](https://medium.com/@droopytersen/hub-flow-getting-started-27b4168cbaa9)
-
-[Modifying State](https://medium.com/@droopytersen/hub-flow-modifying-state-f0426e110c7d)
-
-[Demo](https://stackblitz.com/edit/hub-flow-demo)
