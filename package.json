@@ -1,6 +1,6 @@
 {
   "name": "hub-flow",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Immutable state management powered by Freezer-JS, targeted towards React",
   "main": "lib/index.js",
   "scripts": {

@@ -5,14 +5,19 @@ type ChangeHandler<T> = (current: T, prev?: T) => void;
 type CleanupFn = () => void;
 
 export default abstract class Model<T> {
-  protected listener: FreezerListener;
+  protected listeners: FreezerListener[] = [];
   listenForChanges(handler: ChangeHandler<T>) {
-    if (this.listener) {
-      this.listener.on("update", handler);
+    for (var i = 0; i < this.listeners.length; i++) {
+      if (this.listeners[i].on) {
+        this.listeners[i].on("update", handler);
+      }
     }
+
     return () => {
-      if (this.listener) {
-        this.listener.off("update", handler);
+      for (var i = 0; i < this.listeners.length; i++) {
+        if (this.listeners[i].off) {
+          this.listeners[i].off("update", handler);
+        }
       }
     };
   }
