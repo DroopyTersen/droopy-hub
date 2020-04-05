@@ -1,5 +1,5 @@
 import { FreezerListener } from "./index";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 type ChangeHandler<T> = (current: T, prev?: T) => void;
 type CleanupFn = () => void;
@@ -7,11 +7,23 @@ type CleanupFn = () => void;
 export default abstract class Model<T> {
   protected listener: FreezerListener;
   listenForChanges(handler) {
-    this.listener.on("update", handler);
+    if (this.listener) {
+      this.listener.on("update", handler);
+    }
     return () => {
-      this.listener.off("update", handler);
+      if (this.listener) {
+        this.listener.off("update", handler);
+      }
     };
   }
+}
+
+export function useModel<T>(T: new (...args) => T, ...args) {
+  let model = useMemo(() => {
+    return new T(...args);
+  }, [...args]);
+  useWatchModel(model as any);
+  return model;
 }
 
 export function useWatchModel(model: Model<any>) {

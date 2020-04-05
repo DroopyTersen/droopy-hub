@@ -6,7 +6,7 @@ const defaultOptions: HubOptions = {
   cacheEnabled: true,
 };
 
-export default function createHub<T>(defaultState: T, opts: HubOptions) {
+export default function createHub<T>(defaultState: T, opts: HubOptions): Hub<T> {
   opts = { ...defaultOptions, ...opts };
   var cache = setupCache(opts.cacheKey);
   var initialState = { ...defaultState, ...(opts.cacheEnabled ? cache.get() : {}) };

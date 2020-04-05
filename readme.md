@@ -49,6 +49,7 @@ window.hub = hub;
 export default hub;
 ```
 
+Once you setup a hub, you want to create a `Model` for the various slices/layers of your application state. It is in the `Model` that you can create methods that update AppState as well as setup specific listeners so that your component only re-renders when it needs to.
 _counter.models.ts_
 
 ```typescript
@@ -78,6 +79,37 @@ export class Counter extends Model<Counter> {
 export interface CounterState {
   count: number;
 }
+```
+
+Then use it in a React component by leveraging `useModel`. This hook will wire up the listeners you defined in your Model class so that React only re-renders when it should
+
+```typescript
+import React from "react";
+import { Counter } from "models";
+import { useModel } from "hub-flow";
+
+export function CounterDisplay() {
+  console.log("CounterDisplay -> CounterDisplay");
+  const counter = useModel(Counter);
+  return <div>Counter: {counter.count}</div>;
+}
+
+export function CounterButtons() {
+  console.log("CounterButtons -> CounterButtons");
+  const counter = useModel(Counter);
+  return (
+    <div>
+      <button onClick={counter.reset}>Reset</button>
+      <button onClick={counter.decrement}>-1</button>
+      <button onClick={counter.increment}>+1</button>
+    </div>
+  );
+}
+```
+
+```typescript
+useModel(Counter) => new Counter();
+useModel(User, 3) => new User(3);
 ```
 
 ![Hub Flow](https://cdn-images-1.medium.com/max/1000/1*fQCprFj929rurkPYllpbUw.png)
