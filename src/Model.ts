@@ -6,7 +6,7 @@ type CleanupFn = () => void;
 
 export default abstract class Model<T> {
   protected listener: FreezerListener;
-  listenForChanges(handler) {
+  listenForChanges(handler: ChangeHandler<T>) {
     if (this.listener) {
       this.listener.on("update", handler);
     }
@@ -18,7 +18,7 @@ export default abstract class Model<T> {
   }
 }
 
-export function useModel<T>(T: new (...args) => T, ...args) {
+export function useModel<T>(T: new (...args) => T, ...args): T {
   let model = useMemo(() => {
     return new T(...args);
   }, [...args]);
@@ -26,7 +26,7 @@ export function useModel<T>(T: new (...args) => T, ...args) {
   return model;
 }
 
-export function useWatchModel(model: Model<any>) {
+export function useWatchModel(model: Model<any>): void {
   let [_, forceRefresh] = useState(Date.now());
   useEffect(() => {
     let handler = (...args) => {
