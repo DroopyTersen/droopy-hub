@@ -6,17 +6,26 @@ type CleanupFn = () => void;
 
 export default abstract class Model<T> {
   protected listeners: FreezerListener[] = [];
+
+  getDependencies() {
+    return [];
+  }
+
   listenForChanges(handler: ChangeHandler<T>) {
-    for (var i = 0; i < this.listeners.length; i++) {
-      if (this.listeners[i].on) {
-        this.listeners[i].on("update", handler);
+    let listeners = this.getDependencies()
+      .filter((freezerObject) => freezerObject && freezerObject.getListener())
+      .map((freezerObject) => freezerObject.getListener());
+
+    for (var i = 0; i < listeners.length; i++) {
+      if (listeners[i].on) {
+        listeners[i].on("update", handler);
       }
     }
 
     return () => {
-      for (var i = 0; i < this.listeners.length; i++) {
-        if (this.listeners[i].off) {
-          this.listeners[i].off("update", handler);
+      for (var i = 0; i < listeners.length; i++) {
+        if (listeners[i].off) {
+          listeners[i].off("update", handler);
         }
       }
     };
