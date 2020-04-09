@@ -1,11 +1,13 @@
 {
   "name": "hub-flow",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Immutable state management powered by Freezer-JS, targeted towards React",
   "main": "lib/index.js",
   "scripts": {
+    "prebuild": "npm run clean",
     "build": "tsc",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "clean": "rimraf lib"
   },
   "repository": {
     "type": "git",
@@ -17,9 +19,10 @@
     "freezer-js": "^0.13.0"
   },
   "devDependencies": {
+    "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
-    "react": "16.8.5"
+    "react": "^16.13.1"
   }
 }

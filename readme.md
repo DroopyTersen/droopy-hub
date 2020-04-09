@@ -53,10 +53,10 @@ import hub from "global/hub";
 import { Model } from "hub-flow";
 
 export class Counter extends Model<Counter> {
-  constructor() {
-    super();
-    this.listener = hub.state.counter.getListener();
+  getDependencies() {
+    return [hub.state.counter];
   }
+
   get count() {
     return hub.state.counter.count;
   }
